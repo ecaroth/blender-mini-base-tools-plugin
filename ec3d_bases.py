@@ -19,7 +19,7 @@ BOTTOM_TRIM_VALUE_SHORT = .05
 BOTTOM_TRIM_VALUE_TALL = .1
 
 # ------- UI --------
-class VIEW3D_PT_EC3D_Tools_Panel(bpy.types.Panel):
+class VIEW3D_PT_EC3D_Bases_Tools_Panel(bpy.types.Panel):
     bl_label = "EC3D Base Tools"
     bl_category = "Bases"
     bl_space_type = 'VIEW_3D'
@@ -141,6 +141,7 @@ def exportToFolder(context, filepath, add_folder=None):
         os.makedirs(save_to)
 
     context.scene.ec3d.export_path = save_to
+    print("NEW LOCATION = " + save_to)
 
     orig_selection = context.selected_objects
     for obj in orig_selection:
@@ -324,7 +325,7 @@ def channelCutout(context, obj, is_large=False):
 
     # Now apply modifier for final channel cut obj to base
     context.view_layer.objects.active = obj
-    bpy.ops.object.modifier_apply(apply_as='DATA', modifier=obj_cut_mod)
+    bpy.ops.object.modifier_apply(modifier=obj_cut_mod)
 
     # Finally delete all the temp objects
     obj.select_set(False)
@@ -341,6 +342,7 @@ def channelCutout(context, obj, is_large=False):
 
 def trimBottom(context, obj, remove):
     bottom_z = bottomZ(obj)
+    print("BOTTOM Z IS "+str(bottom_z))
 
     bpy.ops.object.origin_set(type="ORIGIN_GEOMETRY")
     bpy.ops.view3d.snap_cursor_to_active()
@@ -360,7 +362,7 @@ def trimBottom(context, obj, remove):
     bool_cut1.operation = 'DIFFERENCE'
 
     context.view_layer.objects.active = obj
-    bpy.ops.object.modifier_apply(apply_as='DATA', modifier=obj_cut_mod)
+    bpy.ops.object.modifier_apply(modifier=obj_cut_mod)
 
     # Finally delete all the temp objects
     obj.select_set(False)
@@ -574,7 +576,7 @@ class SceneProperties(bpy.types.PropertyGroup):
     )
 
 classes = (
-    VIEW3D_PT_EC3D_Tools_Panel,
+    VIEW3D_PT_EC3D_Bases_Tools_Panel,
     OP_FixBottom,
     OP_ExportToSTL,
     OP_ExportRepeat,
